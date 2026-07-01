@@ -35,7 +35,7 @@ export function Contact() {
   return (
     <section id="contact" className="relative w-full">
       <div className="mx-auto max-w-5xl px-6 py-32 md:px-20">
-        <SectionLabel index="05" label="contact.md" />
+        <SectionLabel index="06" label="contact.md" />
         <h2
           className="mt-4 text-4xl font-bold tracking-tight md:text-6xl"
           style={{ fontFamily: "var(--font-display), system-ui" }}
