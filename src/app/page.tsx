@@ -10,7 +10,7 @@ export default function Page() {
   return (
     <>
       <NavRail />
-      <main className="relative">
+      <main id="main-content" className="relative">
         <Hero />
         <Work />
         <About />

@@ -1,17 +1,17 @@
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { skillGroups } from "@/lib/skills";
 
-const AVATAR = `┌──────────────┐
-│              │
-│    ██████    │
-│   ██    ██   │
-│   ██  DA ██  │
-│   ██    ██   │
-│    ██████    │
-│              │
-│  agent boot  │
-│  ok. ready.  │
-└──────────────┘`;
+const AVATAR = `+--------------+
+|              |
+|    ######    |
+|   ##    ##   |
+|   ##  DA ##  |
+|   ##    ##   |
+|    ######    |
+|              |
+|  agent boot  |
+|  ok. ready.  |
++--------------+`;
 
 export function About() {
   return (
@@ -34,22 +34,23 @@ export function About() {
 {AVATAR}
             </pre>
             <p className="mt-8 text-[15px] leading-[1.65] text-[color:var(--text)]/85">
-              I&apos;m a final-year CSE student at GITAM Bangalore who spent
-              2025 doing something unusual: instead of chasing internships, I
-              built five production AI products end-to-end with Claude as my
-              co-developer.
+              I&apos;m a final-year B.Tech CSE student who spends every hour
+              outside class designing agents that do things in the real world
+              &mdash; read files, drive browsers, triage CVEs, run desktops,
+              defend LLMs from themselves.
             </p>
             <p className="mt-4 text-[15px] leading-[1.65] text-[color:var(--text)]/85">
-              Jarvis, my flagship, is a portable multi-provider assistant
-              running six LLM backends with auto-fallback. Breachintel unifies
-              fourteen OSINT feeds behind one FastAPI. CVE-Advisor triages any
-              CVE with an LLM-authored report.
+              I work with Claude Code + MCP the way most people work with an
+              IDE. Zero job history. Five solo AI products live. One very active{" "}
+              <span className="font-mono text-[color:var(--accent2)]">
+                ~/.claude/
+              </span>{" "}
+              folder.
             </p>
             <p className="mt-4 text-[15px] leading-[1.65] text-[color:var(--text)]/85">
-              The pattern I keep noticing: whether I&apos;m building an agent,
-              red-teaming one, or shipping a product on top of one — it&apos;s
-              the same skill. Design the loop, define the tools, ship the
-              artifact.{" "}
+              The AI + cybersec + vibe-coding threads aren&apos;t three careers
+              &mdash; they&apos;re three faces of the same skill. Every project
+              loops back to Claude + tools + a defined goal.{" "}
               <span className="text-[color:var(--accent)]">
                 That&apos;s the job I want.
               </span>
@@ -79,7 +80,7 @@ export function About() {
                     {g.items.map((it) => (
                       <li key={it} className="flex items-start gap-2">
                         <span className="mt-1 text-[color:var(--accent)]">
-                          ▸
+                          &#9656;
                         </span>
                         <span>{it}</span>
                       </li>

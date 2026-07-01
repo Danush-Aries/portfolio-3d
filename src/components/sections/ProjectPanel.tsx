@@ -42,9 +42,12 @@ export function ProjectPanel({ project, active, onEnter }: Props) {
         >
           {project.index}
         </span>
-        <span>—</span>
+        <span>&mdash;</span>
         <span className={ACCENT_CLASS[project.accent].split(" ")[0]}>
           {project.slug}.repo
+        </span>
+        <span className="ml-auto text-[color:var(--muted)]/70">
+          {project.role} &middot; {project.year}
         </span>
       </div>
 
@@ -60,20 +63,11 @@ export function ProjectPanel({ project, active, onEnter }: Props) {
       </p>
 
       <p className="max-w-[58ch] text-[15px] leading-[1.65] text-[color:var(--text)]/85">
-        {project.blurb}
+        {project.detail}
       </p>
 
-      <ul className="grid grid-cols-1 gap-2 pt-2 font-mono text-[13px] text-[color:var(--text)]/75 sm:grid-cols-2">
-        {project.metrics.map((m) => (
-          <li key={m} className="flex items-start gap-2">
-            <span className="mt-1 inline-block h-1.5 w-1.5 shrink-0 bg-[color:var(--accent)]" />
-            <span>{m}</span>
-          </li>
-        ))}
-      </ul>
-
       <div className="flex flex-wrap gap-2 pt-2">
-        {project.tech.map((t) => (
+        {project.stack.map((t) => (
           <span
             key={t}
             className="border border-[color:var(--muted)]/25 bg-[color:var(--surface)]/60 px-2.5 py-1 font-mono text-[11px] uppercase tracking-wide text-[color:var(--muted)]"
@@ -83,22 +77,28 @@ export function ProjectPanel({ project, active, onEnter }: Props) {
         ))}
       </div>
 
-      <div className="pt-4">
+      <div className="flex flex-wrap gap-3 pt-4">
         <a
-          href={project.github}
-          target="_blank"
-          rel="noopener noreferrer"
+          href={`/work/${project.slug}`}
           className={clsx(
             "group inline-flex items-center gap-2 border px-4 py-2 font-mono text-sm transition-all",
             ACCENT_CLASS[project.accent],
             "hover:bg-[color:var(--surface)]"
           )}
         >
-          <span>github.com/Danush-Aries/{project.slug}</span>
+          <span>&gt; cd {project.slug}/</span>
           <ArrowUpRight
             className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
             strokeWidth={2}
           />
+        </a>
+        <a
+          href={project.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 border border-[color:var(--muted)]/30 px-4 py-2 font-mono text-sm text-[color:var(--muted)] transition-all hover:border-[color:var(--accent2)] hover:text-[color:var(--accent2)]"
+        >
+          <span>github &rarr;</span>
         </a>
       </div>
     </motion.article>

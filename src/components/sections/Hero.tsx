@@ -1,11 +1,13 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { Suspense } from "react";
 import { TerminalText } from "@/components/ui/TerminalText";
 
-const HeroCanvas = dynamic(
-  () => import("@/components/scene/HeroCanvas").then((m) => m.HeroCanvas),
-  { ssr: false }
+// Split the 3D bundle: DOM paints instantly, HeroGraph loads client-side only.
+const HeroGraph = dynamic(
+  () => import("@/components/scene/HeroGraph").then((m) => m.HeroGraph),
+  { ssr: false, loading: () => null }
 );
 
 export function Hero() {
@@ -14,35 +16,58 @@ export function Hero() {
       id="hero"
       className="relative flex min-h-screen w-full items-center overflow-hidden"
     >
-      <HeroCanvas />
+      {/* Static poster shows immediately while the 3D bundle downloads.
+          HeroGraph unmounts it once ready. Both live under a Suspense so the DOM
+          text (the LCP element) is never blocked by shader compile. */}
+      <div
+        className="absolute inset-0 opacity-70"
+        aria-hidden
+        style={{
+          backgroundImage: "url(/hero-poster.svg)",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      />
+      <Suspense fallback={null}>
+        <HeroGraph />
+      </Suspense>
 
-      {/* Foreground DOM */}
+      {/* Foreground DOM — this is the LCP element. Real text, no canvas. */}
       <div className="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-1 gap-12 px-6 py-24 md:grid-cols-12 md:px-20">
         <div className="md:col-span-8">
           <div className="font-mono text-[11px] uppercase tracking-[0.25em] text-[color:var(--accent)]/80">
-            <span className="opacity-60">//</span> boot — agent online
+            <span className="opacity-60">//</span> attack-surface · live
           </div>
+
           <h1
-            className="mt-4 font-display text-[56px] font-bold leading-[0.95] tracking-[-0.02em] md:text-[96px]"
-            style={{ fontFamily: "var(--font-display), system-ui" }}
+            className="mt-4 font-display text-[52px] font-bold leading-[0.95] tracking-[-0.02em] md:text-[92px]"
+            style={{
+              fontFamily: "var(--font-display), system-ui",
+              textWrap: "balance",
+            }}
           >
-            Dhanush
+            I build the AI.
             <br />
-            <span className="text-[color:var(--accent)]">Shankar.</span>
+            <span className="text-[color:var(--danger)]">I break the AI.</span>
+            <br />
+            <span className="text-[color:var(--accent)]">I ship with</span> the AI.
           </h1>
 
-          <div className="mt-8 max-w-[38ch] font-mono text-lg text-[color:var(--text)] md:text-xl">
+          <div className="mt-8 max-w-[46ch] font-mono text-base text-[color:var(--text)] md:text-lg">
             <span className="text-[color:var(--accent)]">&gt; </span>
             <TerminalText
-              text="I build the AI. I break the AI. I ship with the AI."
-              speed={36}
-              startDelay={400}
+              text="Dhanush Shankar — full-stack agent engineer, Bangalore."
+              speed={30}
+              startDelay={300}
             />
           </div>
 
-          <p className="mt-6 max-w-[52ch] text-[15px] leading-[1.65] text-[color:var(--muted)] md:text-base">
-            Full-stack agent engineer — Anthropic SDK, MCP servers, red-team
-            labs. Five products live, zero job history, one AI co-developer.
+          <p className="mt-6 max-w-[54ch] text-[15px] leading-[1.65] text-[color:var(--muted)] md:text-base">
+            Final-year engineering student. Five solo AI products live, one
+            adversarial LLM lab, and a very active{" "}
+            <span className="font-mono text-[color:var(--accent2)]">~/.claude/</span>{" "}
+            folder. Above is the actual attack surface I model against every day
+            — MCP tools, models, and the trust boundaries between them.
           </p>
 
           <div className="mt-10 flex flex-wrap gap-4">
@@ -52,7 +77,7 @@ export function Hero() {
             >
               <span>&gt; view work.log</span>
               <span className="inline-block translate-y-px transition-transform group-hover:translate-x-1">
-                →
+                &rarr;
               </span>
             </a>
             <a
@@ -61,25 +86,44 @@ export function Hero() {
             >
               <span>&gt; cat contact.md</span>
               <span className="inline-block translate-y-px transition-transform group-hover:translate-x-1">
-                →
+                &rarr;
               </span>
             </a>
           </div>
         </div>
       </div>
 
-      {/* HUD chip bottom-right */}
+      {/* Legend chip bottom-right */}
       <div className="pointer-events-none absolute bottom-6 right-6 z-10 hidden font-mono text-[11px] text-[color:var(--muted)] md:block">
-        <div className="flex items-center gap-3 border border-[color:var(--muted)]/25 bg-[color:var(--surface)]/60 px-3 py-2 backdrop-blur">
-          <span className="inline-block h-2 w-2 rounded-full bg-[color:var(--accent)] pulse-dot" />
-          <span>build.a1c9f0 · 60fps · v0.4</span>
+        <div className="flex flex-col gap-1 border border-[color:var(--muted)]/25 bg-[color:var(--surface)]/70 px-3 py-2 backdrop-blur">
+          <div className="text-[color:var(--muted)]/80">// legend</div>
+          <div className="flex items-center gap-2">
+            <span
+              className="inline-block h-2 w-2 rounded-full"
+              style={{ background: "#7CFFB0" }}
+            />
+            model
+            <span
+              className="ml-3 inline-block h-2 w-2 rounded-full"
+              style={{ background: "#5AB0FF" }}
+            />
+            MCP
+            <span
+              className="ml-3 inline-block h-2 w-2 rounded-full"
+              style={{ background: "#FF6B6B" }}
+            />
+            hostile
+          </div>
+          <div className="text-[color:var(--muted)]/70">
+            height &asymp; risk score · hover a node
+          </div>
         </div>
       </div>
 
       {/* Scroll indicator */}
       <div className="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-2">
         <span className="font-mono text-[11px] uppercase tracking-widest text-[color:var(--muted)]">
-          scroll ↓
+          scroll &darr;
         </span>
         <span className="inline-block h-2 w-2 rounded-full bg-[color:var(--accent)] pulse-dot" />
       </div>

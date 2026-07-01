@@ -1,12 +1,16 @@
+// Source of truth mirrored from /Users/danu/gh-paint/portfolio-editorial-design/content.ts
+// The editorial variants render the same 6 projects; the 3D variant renders them differently.
+
 export type Project = {
   index: string;
   slug: string;
   name: string;
+  role: string;
+  year: number;
   pitch: string;
-  blurb: string;
-  tech: string[];
-  github: string;
-  metrics: string[];
+  detail: string;
+  stack: string[];
+  url: string;
   accent: "mint" | "cyan" | "red";
 };
 
@@ -14,97 +18,95 @@ export const projects: Project[] = [
   {
     index: "01",
     slug: "jarvis",
-    name: "Jarvis",
-    pitch: "Portable multi-provider AI assistant with six LLM backends and auto-fallback.",
-    blurb:
-      "A portable AI assistant that boots on any machine and hot-swaps between six LLM providers when one falls over. MCP server registry, hot-reload sub-agents, persistent memory. My daily driver.",
-    tech: ["Python", "Claude SDK", "MCP", "OpenAI", "Ollama", "SQLite"],
-    github: "https://github.com/Danush-Aries/jarvis",
-    metrics: [
-      "6 LLM backends w/ auto-fallback",
-      "MCP server registry + hot-reload",
-      "Ships with 40+ sub-agents",
+    name: "jarvis",
+    role: "flagship",
+    year: 2026,
+    pitch:
+      "Portable multi-provider AI assistant — voice, web, CLI, macOS daemon.",
+    detail:
+      "Six LLM backends with auto-fallback, zero-API-key mode via Claude Max OAuth, four specialised sub-agents (engineering, pentest, desktop, autonomous operator), Playwright MCP + OpenClaw desktop control.",
+    stack: [
+      "Python",
+      "Claude Max / API",
+      "Ollama",
+      "Whisper",
+      "MCP",
+      "Playwright",
     ],
+    url: "https://github.com/Danush-Aries/jarvis",
     accent: "mint",
   },
   {
     index: "02",
     slug: "breachintel",
-    name: "Breachintel",
-    pitch: "Unified OSINT breach-intelligence API stitching 14 feeds behind one FastAPI.",
-    blurb:
-      "One FastAPI, fourteen breach-intel feeds. Query a domain or email once, get a normalized JSON breach report. Ransomware feed is live-updated every 15 minutes.",
-    tech: ["FastAPI", "Python", "PostgreSQL", "Redis", "Docker"],
-    github: "https://github.com/Danush-Aries/breachintel",
-    metrics: [
-      "14 OSINT sources unified",
-      "18 REST endpoints, 4.2K LOC",
-      "Live ransomware feed, 15-min refresh",
-    ],
+    name: "breachintel",
+    role: "OSINT",
+    year: 2026,
+    pitch:
+      "All-source OSINT terminal — 14 feeds behind one FastAPI, 10-tab military-styled investigator GUI.",
+    detail:
+      "18 REST endpoints, live ransomware / dark-web monitor, Shodan key-pool rotator, Leaflet geo maps, ~4,200 lines of Python.",
+    stack: ["Python", "FastAPI", "Shodan", "Playwright", "Leaflet", "vis-network"],
+    url: "https://github.com/Danush-Aries/breachintel",
     accent: "red",
   },
   {
     index: "03",
     slug: "cve-advisor",
-    name: "CVE-Advisor",
-    pitch: "LLM-authored triage reports for any CVE, straight from NVD.",
-    blurb:
-      "Give it a CVE ID. It pulls NVD 2.0, enriches with CWE + EPSS, then has an LLM author a triage report: what it is, who's exposed, how to patch, urgency score. Built for on-call security engineers.",
-    tech: ["Python", "Claude SDK", "NVD API", "EPSS", "CWE"],
-    github: "https://github.com/Danush-Aries/cve-advisor",
-    metrics: [
-      "Full NVD 2.0 integration",
-      "CWE + EPSS enrichment",
-      "LLM-authored triage report",
-    ],
+    name: "cve-advisor",
+    role: "LLM x security",
+    year: 2026,
+    pitch:
+      "LLM-driven CVE triage. Any CVE ID -> a Claude-authored triage report over NVD 2.0 + Exploit-DB.",
+    detail:
+      "Attack surface, exploitability, PoC links, remediation. Hardened Docker sandbox (cap-drop ALL, non-root, 512 MB, read-only FS), 20 async pytest tests, 7-day cache.",
+    stack: ["Python", "FastAPI", "Claude API", "NVD", "Exploit-DB", "Docker"],
+    url: "https://github.com/Danush-Aries/cve-advisor",
     accent: "cyan",
   },
   {
     index: "04",
-    slug: "computer-use-agent",
-    name: "Computer-Use Agent",
-    pitch: "Claude computer-use loops driving a real browser for autonomous recon.",
-    blurb:
-      "A Claude computer-use agent that drives a real Chromium session to enumerate a target's public attack surface. Screenshots at every step. Currently a lab tool, will graduate to a full recon pipeline.",
-    tech: ["Claude SDK", "computer-use", "Playwright", "Python"],
-    github: "https://github.com/Danush-Aries/computer-use-agent",
-    metrics: [
-      "Real browser, real DOM",
-      "Screenshot audit log per turn",
-      "Modular tool schema",
-    ],
-    accent: "mint",
+    slug: "llm-fragility-lab",
+    name: "llm-fragility-lab",
+    role: "red team",
+    year: 2026,
+    pitch:
+      "Adversarial testing lab — probes LLMs for jailbreaks, hallucinations, prompt-injection failure modes.",
+    detail:
+      "Zero-dep scoring (F1 + Jaccard + bigrams + novel-token + length), 29 tests. Where I go to break the models I use in every other project on this page.",
+    stack: ["Python", "Claude", "pytest", "scoring-metrics"],
+    url: "https://github.com/Danush-Aries/llm-fragility-lab",
+    accent: "red",
   },
   {
     index: "05",
-    slug: "customer-support-agent",
-    name: "Customer Support Agent",
-    pitch: "Production-grade support agent with tools, guardrails, and receipts.",
-    blurb:
-      "Full-stack customer support agent: tool-use for order lookup, refund initiation, and knowledge-base search. Every tool call is logged. Hardened against prompt injection with input guardrails.",
-    tech: ["Claude SDK", "TypeScript", "Next.js", "PostgreSQL"],
-    github: "https://github.com/Danush-Aries/customer-support-agent",
-    metrics: [
-      "Tool-use over real APIs",
-      "Full audit log per turn",
-      "Prompt-injection guardrails",
-    ],
-    accent: "cyan",
+    slug: "computer-use-agent",
+    name: "computer-use-agent",
+    role: "agent",
+    year: 2026,
+    pitch:
+      "Claude driving a virtual desktop — Streamlit UI, Dockerized Ubuntu+Xvfb+VNC.",
+    detail:
+      "Screenshot -> plan -> act loop. Prompt caching, image pruning, trajectory recording. An impressive demo of frontier agent capabilities.",
+    stack: ["Python", "Claude computer-use", "Streamlit", "Docker", "VNC"],
+    url: "https://github.com/Danush-Aries/computer-use-agent",
+    accent: "mint",
   },
   {
     index: "06",
-    slug: "llm-fragility-lab",
-    name: "LLM-Fragility Lab",
-    pitch: "Red-team harness that catalogs how frontier LLMs break under adversarial input.",
-    blurb:
-      "A reproducible harness for measuring where frontier LLMs break: jailbreaks, prompt injection, context-length exploits, tool-call spoofing. Each attack ships with a receipt and a defense hypothesis.",
-    tech: ["Python", "Claude SDK", "OpenAI", "Pytest", "Markdown"],
-    github: "https://github.com/Danush-Aries/llm-fragility-lab",
-    metrics: [
-      "12 attack families cataloged",
-      "Reproducible receipts",
-      "Defense-hypothesis per attack",
-    ],
-    accent: "red",
+    slug: "customer-support-agent",
+    name: "customer-support-agent",
+    role: "product",
+    year: 2026,
+    pitch: "Production Next.js 14 chat over a 10-article RAG KB.",
+    detail:
+      "Inline citations, 3-class mood detector + auto-escalation banner, ephemeral prompt caching, extended-thinking streamed to UI. The cleanest demo of AI product engineering.",
+    stack: ["Next.js 14", "TypeScript", "Claude Sonnet", "Tailwind", "Radix"],
+    url: "https://github.com/Danush-Aries/customer-support-agent",
+    accent: "cyan",
   },
 ];
+
+export function projectBySlug(slug: string): Project | undefined {
+  return projects.find((p) => p.slug === slug);
+}
