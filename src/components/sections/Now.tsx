@@ -46,7 +46,7 @@ export function Now() {
   return (
     <section id="now" className="relative w-full">
       <div className="mx-auto max-w-7xl px-6 py-32 md:px-20">
-        <SectionLabel index="04" label="now.log" />
+        <SectionLabel index="05" label="now.log" />
         <h2
           className="mt-4 max-w-3xl text-4xl font-bold tracking-tight md:text-6xl"
           style={{ fontFamily: "var(--font-display), system-ui" }}

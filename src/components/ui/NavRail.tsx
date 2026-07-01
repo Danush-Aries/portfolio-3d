@@ -7,6 +7,7 @@ const SECTIONS = [
   { id: "hero", label: "boot" },
   { id: "work", label: "work.log" },
   { id: "about", label: "whoami" },
+  { id: "credentials", label: "credentials.log" },
   { id: "now", label: "now.log" },
   { id: "contact", label: "contact.md" },
 ];
