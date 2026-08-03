@@ -1,3 +1,7 @@
+export const dynamic = "force-static";
+
+export const alt = "Dhanush Shankar — Portfolio";
+
 import { ImageResponse } from "next/og";
 
 export const alt =
