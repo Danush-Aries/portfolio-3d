@@ -56,3 +56,7 @@ src/
 ```
 
 Crafted with three.js + claude.
+
+## License
+
+MIT — see [LICENSE](LICENSE).
