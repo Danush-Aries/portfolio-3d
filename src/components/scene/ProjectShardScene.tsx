@@ -1,7 +1,7 @@
 "use client";
 
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Suspense, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import type { Project } from "@/lib/projects";
 import { useReducedMotion } from "@/lib/useReducedMotion";
@@ -21,95 +21,102 @@ function Slab({ project }: Props) {
   const groupRef = useRef<THREE.Group>(null);
   const [hovered, setHovered] = useState(false);
   const color = ACCENT_HEX[project.accent];
+  const [texture, setTexture] = useState<THREE.CanvasTexture | null>(null);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+
+    const canvas = document.createElement("canvas");
+    canvas.width = 1024;
+    canvas.height = 640;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    ctx.fillStyle = "#0A0E10";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 4;
+    ctx.strokeRect(24, 24, canvas.width - 48, canvas.height - 48);
+
+    ctx.fillStyle = color;
+    ctx.fillRect(48, 48, 14, 14);
+    ctx.fillStyle = "#5AB0FF";
+    ctx.fillRect(72, 48, 14, 14);
+    ctx.fillStyle = "#6B7772";
+    ctx.fillRect(96, 48, 14, 14);
+
+    ctx.fillStyle = "#6B7772";
+    ctx.font = "600 24px 'JetBrains Mono', monospace";
+    ctx.fillText(`~/dhanush/${project.slug}`, 128, 62);
+
+    ctx.fillStyle = "#E6EDE9";
+    ctx.font = "700 68px 'JetBrains Mono', monospace";
+    ctx.fillText(project.name, 60, 240);
+
+    ctx.fillStyle = color;
+    ctx.font = "500 30px 'JetBrains Mono', monospace";
+    const pitchWords = project.pitch.split(" ");
+    let line = "";
+    let y = 320;
+    for (const w of pitchWords) {
+      const test = line + w + " ";
+      if (ctx.measureText(test).width > canvas.width - 120) {
+        ctx.fillText(line, 60, y);
+        line = w + " ";
+        y += 40;
+      } else {
+        line = test;
+      }
+    }
+    ctx.fillText(line, 60, y);
+
+    ctx.fillStyle = "#6B7772";
+    ctx.font = "500 22px 'JetBrains Mono', monospace";
+    ctx.fillText(`[ ${project.role} · ${project.year} ]`, 60, canvas.height - 60);
+
+    const nextTexture = new THREE.CanvasTexture(canvas);
+    nextTexture.colorSpace = THREE.SRGBColorSpace;
+    setTexture(nextTexture);
+
+    return () => {
+      nextTexture.dispose();
+    };
+  }, [color, project.name, project.pitch, project.role, project.slug, project.year]);
 
   useFrame((state) => {
     if (!groupRef.current) return;
     const t = state.clock.elapsedTime;
-    // idle: slow y-drift + subtle sway
     groupRef.current.position.y = Math.sin(t * 0.6) * 0.05;
     const targetY = hovered ? t * 1.6 : Math.sin(t * 0.35) * 0.25;
     groupRef.current.rotation.y += (targetY - groupRef.current.rotation.y) * 0.05;
     groupRef.current.rotation.x = Math.sin(t * 0.25) * 0.05;
   });
 
-  // Build a canvas texture with the project title in mono
-  const texture = useRef<THREE.CanvasTexture | null>(null);
-  if (typeof document !== "undefined" && !texture.current) {
-    const c = document.createElement("canvas");
-    c.width = 1024;
-    c.height = 640;
-    const ctx = c.getContext("2d");
-    if (ctx) {
-      ctx.fillStyle = "#0A0E10";
-      ctx.fillRect(0, 0, c.width, c.height);
-      // border
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 4;
-      ctx.strokeRect(24, 24, c.width - 48, c.height - 48);
-      // dot chrome
-      ctx.fillStyle = color;
-      ctx.fillRect(48, 48, 14, 14);
-      ctx.fillStyle = "#5AB0FF";
-      ctx.fillRect(72, 48, 14, 14);
-      ctx.fillStyle = "#6B7772";
-      ctx.fillRect(96, 48, 14, 14);
-      // index label
-      ctx.fillStyle = "#6B7772";
-      ctx.font = "600 24px 'JetBrains Mono', monospace";
-      ctx.fillText(`~/dhanush/${project.slug}`, 128, 62);
-      // title big
-      ctx.fillStyle = "#E6EDE9";
-      ctx.font = "700 68px 'JetBrains Mono', monospace";
-      ctx.fillText(project.name, 60, 240);
-      // pitch
-      ctx.fillStyle = color;
-      ctx.font = "500 30px 'JetBrains Mono', monospace";
-      const pitchWords = project.pitch.split(" ");
-      let line = "";
-      let y = 320;
-      for (const w of pitchWords) {
-        const test = line + w + " ";
-        if (ctx.measureText(test).width > c.width - 120) {
-          ctx.fillText(line, 60, y);
-          line = w + " ";
-          y += 40;
-        } else {
-          line = test;
-        }
-      }
-      ctx.fillText(line, 60, y);
-      // role/year
-      ctx.fillStyle = "#6B7772";
-      ctx.font = "500 22px 'JetBrains Mono', monospace";
-      ctx.fillText(
-        `[ ${project.role} · ${project.year} ]`,
-        60,
-        c.height - 60
-      );
-    }
-    const t = new THREE.CanvasTexture(c);
-    t.colorSpace = THREE.SRGBColorSpace;
-    texture.current = t;
-  }
-
   return (
     <group
       ref={groupRef}
       onPointerOver={() => {
         setHovered(true);
-        document.body.style.cursor = "grab";
+        if (typeof document !== "undefined") {
+          document.body.style.cursor = "grab";
+        }
       }}
       onPointerOut={() => {
         setHovered(false);
-        document.body.style.cursor = "";
+        if (typeof document !== "undefined") {
+          document.body.style.cursor = "";
+        }
       }}
     >
-      {/* rim halo */}
       <mesh position={[0, 0, -0.1]}>
         <planeGeometry args={[3.4, 2.3]} />
-        <meshBasicMaterial color={color} transparent opacity={hovered ? 0.15 : 0.06} />
+        <meshBasicMaterial
+          color={color}
+          transparent
+          opacity={hovered ? 0.15 : 0.06}
+        />
       </mesh>
-      {/* glass slab */}
       <mesh ref={meshRef}>
         <boxGeometry args={[3.2, 2.05, 0.1]} />
         <meshStandardMaterial
@@ -120,19 +127,21 @@ function Slab({ project }: Props) {
           emissiveIntensity={hovered ? 0.4 : 0.15}
         />
       </mesh>
-      {/* face texture */}
       <mesh position={[0, 0, 0.056]}>
         <planeGeometry args={[3.05, 1.9]} />
         <meshBasicMaterial
-          map={texture.current ?? undefined}
+          map={texture ?? undefined}
           toneMapped={false}
           transparent
         />
       </mesh>
-      {/* neon edges */}
       <lineSegments>
         <edgesGeometry args={[new THREE.BoxGeometry(3.2, 2.05, 0.1)]} />
-        <lineBasicMaterial color={color} transparent opacity={hovered ? 0.9 : 0.55} />
+        <lineBasicMaterial
+          color={color}
+          transparent
+          opacity={hovered ? 0.9 : 0.55}
+        />
       </lineSegments>
     </group>
   );
