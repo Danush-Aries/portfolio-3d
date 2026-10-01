@@ -7,11 +7,23 @@ export function useReducedMotion(): boolean {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setReduced(mq.matches);
-    const onChange = (e: MediaQueryListEvent) => setReduced(e.matches);
-    mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
+
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = (event?: MediaQueryListEvent | MediaQueryList) => {
+      setReduced(event ? event.matches : media.matches);
+    };
+
+    update();
+
+    if (typeof media.addEventListener === "function") {
+      const listener = ((event: MediaQueryListEvent) => update(event)) as EventListener;
+      media.addEventListener("change", listener);
+      return () => media.removeEventListener("change", listener);
+    }
+
+    const legacyListener = ((event: MediaQueryListEvent) => update(event)) as (event: MediaQueryListEvent) => void;
+    media.addListener(legacyListener);
+    return () => media.removeListener(legacyListener);
   }, []);
 
   return reduced;
