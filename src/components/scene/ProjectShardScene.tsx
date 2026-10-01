@@ -20,8 +20,8 @@ function Slab({ project }: Props) {
   const meshRef = useRef<THREE.Mesh>(null);
   const groupRef = useRef<THREE.Group>(null);
   const [hovered, setHovered] = useState(false);
-  const color = ACCENT_HEX[project.accent];
   const [texture, setTexture] = useState<THREE.CanvasTexture | null>(null);
+  const color = ACCENT_HEX[project.accent];
 
   useEffect(() => {
     if (typeof document === "undefined") return;
@@ -59,11 +59,11 @@ function Slab({ project }: Props) {
     const pitchWords = project.pitch.split(" ");
     let line = "";
     let y = 320;
-    for (const w of pitchWords) {
-      const test = line + w + " ";
+    for (const word of pitchWords) {
+      const test = line + word + " ";
       if (ctx.measureText(test).width > canvas.width - 120) {
         ctx.fillText(line, 60, y);
-        line = w + " ";
+        line = word + " ";
         y += 40;
       } else {
         line = test;
@@ -77,7 +77,10 @@ function Slab({ project }: Props) {
 
     const nextTexture = new THREE.CanvasTexture(canvas);
     nextTexture.colorSpace = THREE.SRGBColorSpace;
-    setTexture(nextTexture);
+    setTexture((current) => {
+      current?.dispose();
+      return nextTexture;
+    });
 
     return () => {
       nextTexture.dispose();
